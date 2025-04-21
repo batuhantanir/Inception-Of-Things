@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
     control.vm.hostname = "eyasaS"
     control.vm.network "private_network", ip: "192.168.56.110"    
     control.vm.provider "virtualbox" do |vb|
-      vb.name = "btanir" 
+      vb.name = "btanirS" 
       vb.memory = 512
       vb.cpus = 1
     end
@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
     control.vm.hostname = "eyasaSW"
     control.vm.network "private_network", ip: "192.168.56.111"    
     control.vm.provider "virtualbox" do |vb|
-      vb.name = "btanir"     
+      vb.name = "eyasaSW"     
       vb.memory = 512
       vb.cpus = 1
     end
