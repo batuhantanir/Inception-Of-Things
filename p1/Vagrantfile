@@ -1,34 +1,41 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
+BOX = "koalephant/debian12"
+BOX_URL = "https://boxes.storage.koalephant.com/debian12/1.4.0/amd64/virtualbox.box"
+COMMON_MEMORY = 512
+COMMON_CPUS = 1
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
+SERVER_MACHINE = "btanirS"
+SERVER_IP = "192.168.56.110" 
+
+SERVER_WORKER_MACHINE = "btanirSW"
+SERVER_WORKER_IP = "192.168.56.111"
+
+PROVIDER = "virtualbox"
+NETWORK = "private_network"
+
+
 Vagrant.configure("2") do |config|
+  config.vm.box = BOX
+  config.vm.box_url = BOX_URL
 
-  config.vm.box = "ubuntu/bionic64"
-
-  # Primary Machine
-  config.vm.define "eyasaS" do |control|
-    control.vm.hostname = "eyasaS"
-    control.vm.network "private_network", ip: "192.168.56.110"    
-    control.vm.provider "virtualbox" do |vb|
-      vb.name = "btanirS" 
-      vb.memory = 512
-      vb.cpus = 1
+  # Server Machine
+  config.vm.define SERVER_MACHINE do |control|
+    control.vm.hostname = SERVER_MACHINE
+    control.vm.network NETWORK, ip: SERVER_IP   
+    control.vm.provider PROVIDER do |vb|
+      vb.name = SERVER_MACHINE 
+      vb.memory = COMMON_MEMORY
+      vb.cpus = COMMON_CPUS
     end
   end
 
-  # Secondary Machine
-  config.vm.define "eyasaSW" do |control|
-    control.vm.hostname = "eyasaSW"
-    control.vm.network "private_network", ip: "192.168.56.111"    
-    control.vm.provider "virtualbox" do |vb|
-      vb.name = "eyasaSW"     
-      vb.memory = 512
-      vb.cpus = 1
+  # Server Worker Machine
+  config.vm.define SERVER_WORKER_MACHINE do |control|
+    control.vm.hostname = SERVER_WORKER_MACHINE
+    control.vm.network NETWORK, ip: SERVER_WORKER_IP  
+    control.vm.provider PROVIDER do |vb|
+      vb.name = SERVER_WORKER_MACHINE     
+      vb.memory = COMMON_MEMORY
+      vb.cpus = COMMON_CPUS
     end
   end
-  
 end
