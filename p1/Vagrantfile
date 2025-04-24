@@ -1,19 +1,24 @@
 BOX = "koalephant/debian12"
 BOX_URL = "https://boxes.storage.koalephant.com/debian12/1.4.0/amd64/virtualbox.box"
-COMMON_MEMORY = 512
+COMMON_MEMORY = 1024
 COMMON_CPUS = 1
+INSTALLERS_PATH = "./installers/"
 
 SERVER_MACHINE = "btanirS"
-SERVER_IP = "192.168.56.110" 
+SERVER_IP = "192.168.56.110"
+SERVER_SH = INSTALLERS_PATH + "server.sh"
 
 SERVER_WORKER_MACHINE = "btanirSW"
 SERVER_WORKER_IP = "192.168.56.111"
+SERVER_WORKER_SH = INSTALLERS_PATH + "server_worker.sh"
 
 PROVIDER = "virtualbox"
 NETWORK = "private_network"
+PROVISION = "shell"
 
 
 Vagrant.configure("2") do |config|
+
   config.vm.box = BOX
   config.vm.box_url = BOX_URL
 
@@ -26,6 +31,7 @@ Vagrant.configure("2") do |config|
       vb.memory = COMMON_MEMORY
       vb.cpus = COMMON_CPUS
     end
+    control.vm.provision PROVISION, path: SERVER_SH, args: [SERVER_IP]
   end
 
   # Server Worker Machine
@@ -37,5 +43,6 @@ Vagrant.configure("2") do |config|
       vb.memory = COMMON_MEMORY
       vb.cpus = COMMON_CPUS
     end
+    control.vm.provision PROVISION, path: SERVER_WORKER_SH, args: [SERVER_IP, SERVER_WORKER_IP]
   end
 end
