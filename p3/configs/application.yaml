@@ -2,16 +2,17 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: wil-app
+  namespace: argocd
 spec:
   destination:
     namespace: dev
     server: https://kubernetes.default.svc
   source:
     path: p3/configs/
-    repoURL: https://github.com/batuhantanir/Inception-Of-Things.git
+    repoURL: https://github.com/batuhantanir/Inception-Of-Things
     targetRevision: HEAD
   sources: []
-  project: wil-app
+  project: default
   syncPolicy:
     automated:
       prune: true
