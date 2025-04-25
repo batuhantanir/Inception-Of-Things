@@ -2,7 +2,7 @@ BOX = "koalephant/debian12"
 BOX_URL = "https://boxes.storage.koalephant.com/debian12/1.4.0/amd64/virtualbox.box"
 COMMON_MEMORY = 1024
 COMMON_CPUS = 1
-INSTALLERS_PATH = "./installers/"
+INSTALLERS_PATH = "./scripts/"
 
 SERVER_MACHINE = "btanirS"
 SERVER_IP = "192.168.56.110"

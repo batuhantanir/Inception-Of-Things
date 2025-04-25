@@ -2,7 +2,7 @@ BOX = "koalephant/debian12"
 BOX_URL = "https://boxes.storage.koalephant.com/debian12/1.4.0/amd64/virtualbox.box"
 COMMON_MEMORY = 1024
 COMMON_CPUS = 1
-INSTALLERS_PATH = "./installers/"
+INSTALLERS_PATH = "./scripts/"
 
 SERVER_MACHINE = "btanirS"
 SERVER_IP = "192.168.56.110"
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
   config.vm.define SERVER_MACHINE do |control|
     control.vm.hostname = SERVER_MACHINE
     control.vm.network NETWORK, ip: SERVER_IP   
-    control.vm.synced_folder "./apps", "/vagrant", type: "virtualbox"
+    control.vm.synced_folder "./confs", "/vagrant", type: "virtualbox"
     control.vm.provider PROVIDER do |vb|
       vb.name = SERVER_MACHINE 
       vb.memory = COMMON_MEMORY

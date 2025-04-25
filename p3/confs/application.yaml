@@ -8,7 +8,7 @@ spec:
     namespace: dev
     server: https://kubernetes.default.svc
   source:
-    path: p3/configs/
+    path: p3/confs/
     repoURL: https://github.com/batuhantanir/Inception-Of-Things
     targetRevision: HEAD
   sources: []

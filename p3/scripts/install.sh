@@ -13,7 +13,7 @@
 
 #curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
-k3d cluster create --config ./configs/cluster.yaml
+k3d cluster create --config ../confs/cluster.yaml
 kubectl cluster-info
 
 kubectl create namespace argocd
@@ -21,8 +21,8 @@ kubectl create namespace dev
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=ready pod --all -n argocd --timeout=300s
 
-kubectl apply -n argocd -f ./configs/application.yaml
-kubectl apply -n dev -f./configs/deployment.yaml
+kubectl apply -n argocd -f ../confs/application.yaml
+kubectl apply -n dev -f ../confs/deployment.yaml
 
 echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
 
