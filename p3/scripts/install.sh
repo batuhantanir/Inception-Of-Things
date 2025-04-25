@@ -1,5 +1,6 @@
 #sudo apt-get update -y
 #sudo apt-get upgrade -y
+#sudo apt-get install curl -y
 
 #sudo apt-get install ca-certificates curl
 #sudo install -m 0755 -d /etc/apt/keyrings

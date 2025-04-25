@@ -9,8 +9,8 @@ spec:
     server: https://kubernetes.default.svc
   source:
     path: p3/confs/
-    repoURL: https://github.com/batuhantanir/Inception-Of-Things
-    targetRevision: main
+    repoURL: https://gitlab.com/emirys774/inception-of-things
+    targetRevision: HEAD
   project: default
   syncPolicy:
     automated:
