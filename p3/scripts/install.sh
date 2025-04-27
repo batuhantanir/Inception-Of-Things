@@ -20,9 +20,6 @@ kubectl cluster-info
 kubectl create namespace argocd
 kubectl create namespace dev
 
-kubectl apply -f https://raw.githubusercontent.com/k3d-io/k3d/main/install/crds/k3d-crd.yaml
-kubectl get crd
-
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=ready pod --all -n argocd --timeout=100s
 
