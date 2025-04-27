@@ -25,10 +25,11 @@ kubectl wait --for=condition=ready pod --all -n argocd --timeout=100s
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
+kubectl apply -f ../confs/service.yaml
 
 echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
 
-POD_NAME=$(kubectl get pods -n dev -l app=wil-app -o jsonpath='{.items[0].metadata.name}')
+POD_NAME=$(kubectl get pods -n dev -l app=wil-playground -o jsonpath='{.items[0].metadata.name}')
 
 if [ -z "$POD_NAME" ]; then
   echo "Pod bulunamadı!"
