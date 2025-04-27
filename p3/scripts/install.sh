@@ -29,4 +29,6 @@ kubectl apply -n dev -f ../confs/service.yaml
 
 echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
 
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+kubectl port-forward svc/argocd-server -n argocd 8080:443 &>/dev/null &
+
+kubectl port-forward svc/wil-playground-service -n dev 8888:8888 &>/dev/null &
