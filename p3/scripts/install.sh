@@ -29,13 +29,4 @@ kubectl apply -f ../confs/service.yaml
 
 echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
 
-POD_NAME=$(kubectl get pods -n dev -l app=wil-playground -o jsonpath='{.items[0].metadata.name}')
-
-if [ -z "$POD_NAME" ]; then
-  echo "Pod bulunamadı!"
-  exit 1
-fi
-
-nohup kubectl port-forward pod/$POD_NAME 8888:8888 -n dev > /dev/null 2>&1 &
-
 kubectl port-forward svc/argocd-server -n argocd 8080:443
