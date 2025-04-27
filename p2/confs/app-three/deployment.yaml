@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: app2
+  name: app3
 spec:
   selector:
-    app: app2
+    app: app3
   ports:
   - protocol: TCP
     port: 80
@@ -15,24 +15,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app2
+  name: app3
   labels:
-    app: app2
+    app: app3
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: app2
+      app: app3
   template:
     metadata:
       labels:
-        app: app2
+        app: app3
     spec:
       containers:
         - name: hello-kubernetes
           image: paulbouwer/hello-kubernetes:1.10
           env:
           - name: MESSAGE
-            value: "Hello from app2."
+            value: "Hello from app3."
           ports:
             - containerPort: 8080
