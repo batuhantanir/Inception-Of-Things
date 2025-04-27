@@ -10,7 +10,7 @@ spec:
   source:
     path: p3/confs/
     repoURL: https://github.com/batuhantanir/Inception-Of-Things
-    targetRevision: main
+    targetRevision: HEAD
   project: default
   syncPolicy:
     automated:

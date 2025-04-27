@@ -14,13 +14,17 @@
 
 #curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
-k3d cluster create --config ../confs/cluster.yaml
+k3d cluster create eyasa --servers 1 --agents 1
 kubectl cluster-info
 
 kubectl create namespace argocd
 kubectl create namespace dev
+
+kubectl apply -f https://raw.githubusercontent.com/k3d-io/k3d/main/install/crds/k3d-crd.yaml
+kubectl get crd
+
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl wait --for=condition=ready pod --all -n argocd --timeout=300s
+kubectl wait --for=condition=ready pod --all -n argocd --timeout=100s
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml

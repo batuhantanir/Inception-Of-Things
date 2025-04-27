@@ -8,7 +8,7 @@ spec:
     namespace: dev
     server: https://kubernetes.default.svc
   source:
-    path: p3/confs/
+    path: confs/
     repoURL: https://gitlab.com/emirys774/inception-of-things
     targetRevision: HEAD
   project: default

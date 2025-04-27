@@ -17,11 +17,16 @@ kubectl cluster-info
 kubectl create namespace argocd
 kubectl create namespace dev
 kubectl create namespace gitlab
+
 sudo curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 sudo chmod +x get_helm.sh
 sudo ./get_helm.sh
 sudo helm repo add gitlab https://charts.gitlab.io/
 sudo helm repo update
+
+helm upgrade --install gitlab gitlab/gitlab \
+  --namespace gitlab \
+  -f ../confs/values.yaml
 
 echo "Gitlab Password: $(kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -ojsonpath='{.data.password}' | base64 -d)" > password.txt
 
