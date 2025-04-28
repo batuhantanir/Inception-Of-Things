@@ -31,4 +31,7 @@ echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o js
 
 kubectl port-forward svc/argocd-server -n argocd 8080:443 &>/dev/null &
 
-kubectl port-forward svc/wil-playground-service -n dev 8888:8888 &>/dev/null &
+while true; do
+  kubectl port-forward svc/wil-playground-service 8888:8888 -n dev
+  sleep 1
+done
