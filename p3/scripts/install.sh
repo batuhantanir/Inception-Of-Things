@@ -1,3 +1,6 @@
+#!/bin/bash
+#set -e
+
 #sudo apt-get update -y
 #sudo apt-get upgrade -y
 #sudo apt-get install curl -y
@@ -14,24 +17,21 @@
 
 #curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
-k3d cluster create eyasa --servers 1 --agents 1
+#k3d cluster create eyasa --servers 1 --agents 1
 kubectl cluster-info
 
 kubectl create namespace argocd
 kubectl create namespace dev
 
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl wait --for=condition=ready pod --all -n argocd --timeout=100s
+kubectl wait --for=condition=ready pod --all -n argocd --timeout=500s
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
 kubectl apply -n dev -f ../confs/service.yaml
 
-echo "Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
+echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" > password.txt
 
 kubectl port-forward svc/argocd-server -n argocd 8080:443 &>/dev/null &
 
-while true; do
-  kubectl port-forward svc/wil-playground-service 8888:8888 -n dev
-  sleep 1
-done
+kubectl port-forward svc/wil-playground-service -n dev 8888:8888 &>/dev/null &
