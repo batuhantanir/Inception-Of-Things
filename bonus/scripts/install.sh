@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 #sudo apt-get update -y
 #sudo apt-get install curl -y
 
@@ -11,7 +14,7 @@
   #sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 #sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugi
 
-k3d cluster create --config ../confs/cluster.yaml
+k3d cluster create eyasa-bonus --servers 1 --agents 1
 kubectl cluster-info
 
 kubectl create namespace argocd
@@ -36,7 +39,8 @@ kubectl wait --for=condition=ready pod --all -n argocd --timeout=50s
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
-kubectl apply -n gitlab -f ../conf
+kubectl apply -n dev -f ../confs/service.yaml
+
 echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" >> password.txt
 
 kubectl port-forward svc/argocd-server -n argocd 8080:443

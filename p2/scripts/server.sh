@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 sudo apt-get update -y
 sudo apt-get install -y curl
 
@@ -13,7 +15,7 @@ echo "alias k='kubectl'" >> "$RC_FILE"
 
 sleep 20
 
-kubectl apply -n kube-system -f /vagrant/app-one/deployment.yaml
-kubectl apply -n kube-system -f /vagrant/app-two/deployment.yaml
-kubectl apply -n kube-system -f /vagrant/app-three/deployment.yaml
-kubectl apply -n kube-system -f /vagrant/network/ingress.yaml
+kubectl apply -f /vagrant/app-one/deployment.yaml
+kubectl apply -f /vagrant/app-two/deployment.yaml
+kubectl apply -f /vagrant/app-three/deployment.yaml
+kubectl apply -f /vagrant/network/ingress.yaml
