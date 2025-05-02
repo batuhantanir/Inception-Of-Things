@@ -22,6 +22,8 @@ global:
   ssh:
     enabled: true
     port: 22
+  image:
+    pullPolicy: IfNotPresent
 certmanager:
   install: false
 nginx-ingress:
@@ -38,9 +40,8 @@ gitlab:
     maxReplicas: 1
     servicePort: 8181
     service:
-      type: NodePort
-      port: 8080
-      nodePort: 30080
+      type: ClusterIP
+      port: 8181
   sidekiq:
     minReplicas: 1
     maxReplicas: 1
@@ -48,13 +49,7 @@ gitlab:
     minReplicas: 1
     maxReplicas: 1
     service:
-      type: LoadBalancer
-      loadBalancerIP: 192.168.56.110
+      type: ClusterIP
       port: 22
-    port:
-      enabled: true
-      number: 22
 registry:
-  hpa:
-    minReplicas: 1
-    maxReplicas: 1
+  enabled: false

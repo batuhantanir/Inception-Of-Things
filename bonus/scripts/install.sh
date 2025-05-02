@@ -75,31 +75,18 @@ kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
 kubectl apply -n dev -f ../confs/service.yaml
 kubectl apply -f ../confs/gitlab-ingress.yaml
+kubectl apply -f ../confs/argocd-ingress.yaml
 
 echo "Parolalar kaydediliyor..."
 echo "Gitlab Password: $(kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -ojsonpath='{.data.password}' | base64 -d)" > password.txt
 echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" >> password.txt
 
-function start_port_forwards() {
-  echo "Port yönlendirmeleri başlatılıyor..."
-  
-  kubectl port-forward svc/gitlab-webservice-default -n gitlab 8181:8181 --address=192.168.56.110 &
-  GITLAB_PF_PID=$!
-  echo "GitLab port-forward PID: $GITLAB_PF_PID"
-  
-  kubectl port-forward svc/argocd-server -n argocd 8080:443 --address=192.168.56.110 &
-  ARGOCD_PF_PID=$!
-  echo "ArgoCD port-forward PID: $ARGOCD_PF_PID"
-  
-  echo "Port yönlendirmeleri başlatıldı."
-  echo "Erişim bilgileri:"
-  echo "GitLab: http://192.168.56.110:8081"
-  echo "ArgoCD: https://192.168.56.110:8080"
-  echo ""
-  echo "Bu scripti durdurmak için Ctrl+C tuşlarına basın"
-  echo "Port yönlendirme işlemlerini sonlandırmak için: kill $GITLAB_PF_PID $ARGOCD_PF_PID"
-  
-  wait
-}
+echo "Kurulum tamamlandı!"
+echo "Erişim bilgileri:"
+echo "GitLab: http://gitlab.local"
+echo "ArgoCD: http://argocd.local"
+echo "Parolalar password.txt dosyasında kaydedildi."
 
-start_port_forwards
+# /etc/hosts dosyasına gerekli DNS kayıtlarını ekle
+echo "DNS kayıtları ekleniyor..."
+echo "192.168.56.110 gitlab.local argocd.local" | sudo tee -a /etc/hosts
