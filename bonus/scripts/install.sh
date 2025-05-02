@@ -4,7 +4,7 @@
 sudo apt-get update -y
 sudo apt-get install curl -y
 
-sudo apt-get install ca-certificates curl
+#sudo apt-get install ca-certificates curl
 #sudo install -m 0755 -d /etc/apt/keyrings
 #sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 #sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -27,17 +27,18 @@ sudo ./get_helm.sh
 sudo helm repo add gitlab https://charts.gitlab.io/
 sudo helm repo update
 
-#helm upgrade --install gitlab gitlab/gitlab \
+sudo helm upgrade --install gitlab gitlab/gitlab \
   --namespace gitlab \
-  -f ../confs/values.yaml
+  -f ../confs/gitlab.values.yaml
 
-#sudo kubectl wait --for=condition=available deployments --all -n gitlab --timeout=5m
+sudo kubectl wait --for=condition=available deployments --all -n gitlab --timeout=5m
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-#kubectl wait --for=condition=ready pod --all -n argocd --timeout=5m
+kubectl wait --for=condition=ready pod --all -n argocd --timeout=5m
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
 kubectl apply -n dev -f ../confs/service.yaml
+kubectl apply -f ../confs/gitlab-ingress.yaml
 
 echo "Gitlab Password: $(kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -ojsonpath='{.data.password}' | base64 -d)" > password.txt
 echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" >> password.txt
