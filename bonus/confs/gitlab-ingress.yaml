@@ -3,6 +3,21 @@ kind: Ingress
 metadata:
   name: gitlab-ingress
   namespace: gitlab
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-Port $server_port;
+      proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504;
+      proxy_cache_valid 200 302 1d;
+      proxy_cache_valid 404 1m;
+      proxy_cache_bypass $http_cache_control;
+      add_header X-Cache-Status $upstream_cache_status;
 spec:
   ingressClassName: nginx
   rules:
@@ -15,4 +30,11 @@ spec:
           service:
             name: gitlab-webservice-default
             port:
-              number: 8081
+              number: 8181
+      - path: /assets/
+        pathType: Prefix
+        backend:
+          service:
+            name: gitlab-webservice-default
+            port:
+              number: 8181

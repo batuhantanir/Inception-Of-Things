@@ -36,7 +36,7 @@ gitlab:
     externUrl: "http://gitlab.local"
     minReplicas: 1
     maxReplicas: 1
-    servicePort: 8081
+    servicePort: 8181
     service:
       type: NodePort
       port: 8080
