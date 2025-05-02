@@ -33,7 +33,7 @@ sudo helm upgrade --install gitlab gitlab/gitlab \
 
 sudo kubectl wait --for=condition=available deployments --all -n gitlab --timeout=5m
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl wait --for=condition=ready pod --all -n argocd --timeout=5m
+kubectl wait --for=condition=ready pod --all -n argocd --timeout=5m 
 
 kubectl apply -n argocd -f ../confs/application.yaml
 kubectl apply -n dev -f ../confs/deployment.yaml
@@ -43,6 +43,6 @@ kubectl apply -f ../confs/gitlab-ingress.yaml
 echo "Gitlab Password: $(kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -ojsonpath='{.data.password}' | base64 -d)" > password.txt
 echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" >> password.txt
 
-kubectl port-forward svc/gitlab-webservice-default -n gitlab 8081:8080 &>/dev/null &
+kubectl port-forward svc/gitlab-webservice-default -n gitlab 8081:8080 --address=192.168.56.110 
 
-kubectl port-forward svc/argocd-server -n argocd 8080:443 &>/dev/null &
+kubectl port-forward svc/argocd-server -n argocd 8080:443 &
