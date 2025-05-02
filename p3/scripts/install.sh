@@ -32,7 +32,8 @@ kubectl apply -n dev -f ../confs/service.yaml
 
 echo "ArgoCd Password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" > password.txt
 
-kubectl port-forward svc/argocd-server -n argocd 8080:443 &>/dev/null &
+kubectl port-forward svc/argocd-server -n argocd 8080:443 --address=192.168.56.110 &>/dev/null &
+echo "ArgoCD is available at: https://192.168.56.110:8080"
 
 while true; do
     kubectl port-forward svc/wil-playground-service -n dev 8888:8888 &>/dev/null &
