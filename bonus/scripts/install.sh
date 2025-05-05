@@ -14,12 +14,26 @@ sudo apt-get install curl -y
   #sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 #sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugi
 
-k3d cluster create eyasa-bonus --servers 1 --agents 1
+k3d cluster create eyasa-bonus \
+  --servers 1 \
+  --agents 1 \
+  --port "80:80@loadbalancer" \
+  --port "443:443@loadbalancer" \
+  --api-port 6443
 kubectl cluster-info
 
 kubectl create namespace argocd
 kubectl create namespace dev
 kubectl create namespace gitlab
+
+# Install NGINX Ingress Controller
+echo "NGINX Ingress Controller kurulumu başlatılıyor..."
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+echo "NGINX Ingress Controller hazır olana kadar bekleniyor..."
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=120s
 
 sudo curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 sudo chmod +x get_helm.sh
@@ -27,13 +41,11 @@ sudo ./get_helm.sh
 sudo helm repo add gitlab https://charts.gitlab.io/
 sudo helm repo update
 
-#openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout gitlab.key -out gitlab.crt -subj "/CN=gitlab.local" -addext "subjectAltName = DNS:gitlab.local"
-#kubectl create secret generic gitlab-custom-ca --from-file=gitlab.crt --from-file=gitlab.key -n gitlab
-
 echo "GitLab kurulumu başlatılıyor..."
 sudo helm upgrade --install gitlab gitlab/gitlab \
   --namespace gitlab \
-  --version 7.5.0 \
+  --version 8.11.1 \
+  --set certmanager-issuer.email=emirys774@gmail.com \
   --set global.image.pullPolicy=IfNotPresent \
   -f ../confs/gitlab.values.yaml
 
@@ -58,7 +70,6 @@ function wait_for_pods() {
       fi
     fi
     
-    echo "Hala bekleniyor... Pending: $pending_pods, Creating: $creating_pods, Initializing: $initializing_pods"
     sleep 10
   done
 }
@@ -87,6 +98,5 @@ echo "GitLab: http://gitlab.local"
 echo "ArgoCD: http://argocd.local"
 echo "Parolalar password.txt dosyasında kaydedildi."
 
-# /etc/hosts dosyasına gerekli DNS kayıtlarını ekle
-echo "DNS kayıtları ekleniyor..."
-echo "192.168.56.110 gitlab.local argocd.local" | sudo tee -a /etc/hosts
+# ArgoCD'yi insecure modda çalıştır
+kubectl patch deployment argocd-server -n argocd -p '{"spec": {"template": {"spec": {"containers": [{"name": "argocd-server","command": ["argocd-server","--insecure","--staticassets","/shared/app"]}]}}}}'

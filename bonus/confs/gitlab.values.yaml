@@ -2,7 +2,7 @@ global:
   edition: "ce"
   externalURL: http://gitlab.local
   ingress:
-    configureCertmanager: false
+    enabled: true
     class: "nginx"
   hosts:
     domain: gitlab.local
