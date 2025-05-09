@@ -19,19 +19,40 @@ sudo apt update -y > /dev/null 2>&1
 
 sudo apt install docker docker-compose docker.io -y > /dev/null 2>&1
 
+sudo systemctl start docker
+sudo systemctl enable docker
+
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" > /dev/null 2>&1
 
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl > /dev/null 2>&1
 
 sudo rm -rf kubectl
 
-sudo k3d cluster create eyasa --servers 1 --agents 1
+sleep 5
+
+if ! k3d cluster list | grep -q "eyasa"; then
+    echo "Creating k3d cluster 'eyasa'..."
+    sudo k3d cluster create eyasa \
+        --servers 1 \
+        --agents 1 \
+        --k3s-arg '--disable=traefik@server:0' \
+        --k3s-arg '--disable=servicelb@server:0' \
+        --k3s-arg '--disable=metrics-server@server:0' \
+        --wait \
+        --timeout 60s
+
+    sleep 10
+else
+    echo "Cluster 'eyasa' already exists, skipping creation..."
+fi
+
 sudo kubectl cluster-info
 
 sudo kubectl create namespace argocd
 sudo kubectl create namespace dev
 
-# Pod durumunu kontrol etmek için fonksiyon
 function wait_for_pods() {
   namespace=$1
   echo "Bekliyor: $namespace namespace'indeki tüm podlar hazır olana kadar..."
