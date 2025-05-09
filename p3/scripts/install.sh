@@ -96,7 +96,16 @@ sudo kubectl port-forward svc/argocd-server -n argocd --address=0.0.0.0 8080:443
 ARGOCD_PF_PID=$!
 echo "ArgoCD port-forward PID: $ARGOCD_PF_PID"
 
+sudo kubectl port-forward svc/wil-playground-service -n dev --address=0.0.0.0 8888:8888 &
+PF_PID=$!
+
 while true; do
-    sudo kubectl port-forward svc/wil-playground-service -n dev --address=0.0.0.0 8888:8888
+    if ! kill -0 $PF_PID 2>/dev/null; then
+        echo "Port-forward connection lost, cleaning up and restarting..."
+        sudo lsof -ti :8888 | xargs -r sudo kill -9
+        sleep 2
+        sudo kubectl port-forward svc/wil-playground-service -n dev --address=0.0.0.0 8888:8888 &
+        PF_PID=$!
+    fi
     sleep 5
 done
